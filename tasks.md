@@ -1,8 +1,8 @@
-## Taks para finalizar API de usuários
+## Tasks para finalizar API de usuários
 
-### Menssagens e trativas de erros
-* Adicionar Classe para validação e geração de menssagens de erros
-* Adicionar Classe de Resposta dos serviços para exibir as menssagens dinamicamente
+### Mensagens e trativas de erros
+* Adicionar Classe para validação e geração de mensagens de erros
+* Adicionar Classe de Resposta dos serviços para exibir as mensagens dinamicamente
 * Adicionar tratativa de erros utilizando
 
 ### Autenticação
