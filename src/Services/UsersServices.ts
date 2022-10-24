@@ -1,4 +1,6 @@
 import { hash } from "bcrypt"
+import { AppError } from "../configs/errors/AppError"
+import { AppMessages, responseService } from "../configs/Messages/AppMessages"
 import { User, UserToDTO } from "../entities/User"
 import { IUsersRepository } from "../repositories/interfaces/IUsersRepository"
 
@@ -33,53 +35,63 @@ class UsersService {
         private usersRepositories: IUsersRepository,
     ) {}
 
-    public async create({name, email, password}: payloadCreate): Promise<number> {
-        const user =  new User(name, email, password)
-        
-        if(!user.validateEmail()) throw new Error("Email em formato inválido!")
+    public async create({name, email, password}: payloadCreate): Promise<responseService> {
 
-        if(!user.validatePassword()) throw new Error("Senha em formato inválido!")
+        AppError.existsError(email, AppMessages.findMessage('ERR006'))
+        AppError.existsError(password, AppMessages.findMessage('ERR007'))
+        AppError.existsError(name, AppMessages.findMessage('ERR008'))
+
+        const user =  new User(name, email, password)
+
+        if(!user.validateEmail()) throw new AppError(AppMessages.findMessage('ERR004'))
+
+        if(!user.validatePassword()) throw new AppError(AppMessages.findMessage('ERR003'))
 
         const [findUserByEmail, passwordHash] = await Promise.all([
              this.usersRepositories.selectByEmail(email),
              hash(password, SALT_ROUNDS)
         ])
          
-        if(findUserByEmail) throw new Error("Email já cadastrado!")
+        if(findUserByEmail) {
+            throw new AppError(AppMessages.findMessage('ERR005'))
+        }
         
         const insertId = await this.usersRepositories.create({name, email, password: passwordHash})
 
-        return insertId
+        const msg = AppMessages.findMessage('MSG001')
+
+        return AppMessages.sendMessageService(msg, {id: insertId})
     }
 
-    public async updateById({ id_user, name, email, password}: payload): Promise<number> {
+    public async updateById({ id_user, name, email, password}: payload): Promise<responseService> {
         const findUserById = await this.usersRepositories.selectById(id_user)
-
-        if(!findUserById) throw new Error("Usuário não cadastrado")
-
+        AppError.existsError(findUserById, AppMessages.findMessage('ERR001'))
+        const lastEmail = findUserById?.email
         const user = new User(name, email, password)
 
-        if(!user.validateEmail()) throw new Error("Email em formato inválido!")
+        if(!user.validateEmail()) throw new AppError(AppMessages.findMessage('ERR004'))
 
-        if(!user.validatePassword()) throw new Error("Senha em formato inválido!")
+        if(!user.validatePassword()) throw new AppError(AppMessages.findMessage('ERR003'))
 
-        if(!user.compareEmail(findUserById.email)) {
+        if(!user.compareEmail(lastEmail || '')) {
             const findUserByEmail = await this.usersRepositories.selectByEmail(email)
 
-            if(findUserByEmail) throw new Error("Email já cadastrado!")
+            if(findUserByEmail) throw new AppError(AppMessages.findMessage('ERR005'))
         }
 
         const passwordHash = await hash(password, SALT_ROUNDS)
 
         const insertId = await this.usersRepositories.update({email, id_user, name, password: passwordHash})
 
-        return insertId
+        const msg = AppMessages.findMessage('MSG002')
+
+        return AppMessages.sendMessageService(msg, {id: insertId})
     }
 
     public async listById(id_user: number): Promise<UserToDTO>{
         const findUserById = await this.usersRepositories.selectById(id_user)
 
-        if(!findUserById) throw new Error("Usuário não cadastrado")
+        if(!findUserById) throw new AppError(AppMessages.findMessage('ERR001'))
 
         const user = new User(findUserById.name, findUserById.email, findUserById.password)
 
@@ -94,14 +106,16 @@ class UsersService {
         return listUsersToDTO
     }
 
-    public async deleteById(id_user: number): Promise<number> {
+    public async deleteById(id_user: number): Promise<responseService> {
         const user = await this.usersRepositories.selectById(id_user)
 
-        if(!user) throw new Error("Usuário não cadastrado!")
+        if(!user) throw new AppError(AppMessages.findMessage('ERR001'))
 
         const deletedId = await this.usersRepositories.delete(id_user)
 
-        return deletedId
+        const msg = AppMessages.findMessage('MSG003')
+
+        return AppMessages.sendMessageService(msg, {id: deletedId})
     }
 }
 

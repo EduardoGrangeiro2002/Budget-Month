@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { AppError } from "../configs/errors/AppError";
+import { AppMessages } from "../configs/Messages/AppMessages";
 import { UsersService } from "../Services/UsersServices";
 
 export class UsersController {
@@ -12,9 +14,13 @@ export class UsersController {
 
             const result = await this.usersService.create({ name, email, password })
 
-            return res.json({msg: 'Usuário criado com sucesso', id: result})
-        } catch (e) {
-            throw e
+            return res.json(result)
+        } catch (e: any) {
+            if(e.message && e.statusCode) return res.status(e.statusCode).json(e.message)
+            
+            const error = new AppError(AppMessages.findMessage('ERR009'))
+
+            return res.status(error.statusCode).json(error.message)
         }
     }
 
@@ -23,9 +29,13 @@ export class UsersController {
             const { id_user, name, email, password } = req.body
             const result = await this.usersService.updateById({id_user, name, email, password})
 
-            return res.json({msg: 'Usuário alterado com sucesso', id: result})
-        } catch (e) {
-            throw e
+            return res.json(result)
+        } catch (e: any) {
+            if(e.message && e.statusCode) return res.status(e.statusCode).json(e.message)
+            
+            const error = new AppError(AppMessages.findMessage('ERR009'))
+
+            return res.status(error.statusCode).json(error.message)
         }
     }
 
@@ -35,8 +45,12 @@ export class UsersController {
             const result = await this.usersService.listById(parseInt(id_user))
 
             return res.json({result})
-        } catch (e) {
-            throw e
+        } catch (e: any) {
+            if(e.message && e.statusCode) return res.status(e.statusCode).json(e.message)
+            
+            const error = new AppError(AppMessages.findMessage('ERR009'))
+
+            return res.status(error.statusCode).json(error.message)
         }
     }
 
@@ -46,8 +60,12 @@ export class UsersController {
             const result = await this.usersService.listAll(conditions)
 
             return res.json({result})
-        } catch (e) {
-            throw e
+        } catch (e: any) {
+            if(e.message && e.statusCode) return res.status(e.statusCode).json(e.message)
+            
+            const error = new AppError(AppMessages.findMessage('ERR009'))
+
+            return res.status(error.statusCode).json(error.message)
         }
     }
 
@@ -56,9 +74,13 @@ export class UsersController {
             const { id_user } = req.params
             const result = await this.usersService.deleteById(parseInt(id_user))
 
-            return res.json({msg: 'Usuário apagado com sucesso', id: result})
-        } catch (e) {
-            throw e
+            return res.json(result)
+        } catch (e: any) {
+            if(e.message && e.statusCode) return res.status(e.statusCode).json(e.message)
+            
+            const error = new AppError(AppMessages.findMessage('ERR009'))
+
+            return res.status(error.statusCode).json(error.message)
         }
     }
 }
