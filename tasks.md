@@ -3,4 +3,4 @@
 ### Autenticação
 * Adicionar api de autenticação.
 * Usuário irá poder se logar por tokens e refresh tokens
-* Adicionar geração de tokens++
+* Adicionar geração de tokens
