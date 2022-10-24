@@ -41,4 +41,6 @@ export interface IUsersRepository {
      selectById(id_user: number): Promise<User | null>
 
      delete(id_user: number): Promise<number>
+
+     register(id_user: number): Promise<number>
 }

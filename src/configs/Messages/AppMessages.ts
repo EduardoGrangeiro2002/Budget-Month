@@ -19,6 +19,7 @@ export class AppMessages {
             {cod: 'MSG001', message: 'Usuário criado com sucesso!', statusCode: 201},
             {cod: 'MSG002', message: 'Usuário alterado com sucesso!', statusCode: 200},
             {cod: 'MSG003', message: 'Usuário apagado com sucesso!', statusCode: 200},
+            {cod: 'MSG004', message: 'Usuário registrado com sucesso!', statusCode: 200},
             {cod: 'ERR001', message: 'Usuário não encontrado!', statusCode: 404},
             {cod: 'ERR002', message: 'Email já cadastrado!', statusCode: 400},
             {cod: 'ERR003', message: 'Senha inválida!', statusCode: 400},
@@ -28,6 +29,7 @@ export class AppMessages {
             {cod: 'ERR007', message: 'Senha é um campo obrigatório!', statusCode: 400},
             {cod: 'ERR008', message: 'Nome é um campo obrigatório!', statusCode: 400},
             {cod: 'ERR009', message: 'Erro interno no servidor!', statusCode: 500},
+            {cod: 'ERR011', message: 'Erro ao tentar registrar usuário', statusCode: 400},
 
         ]
     }

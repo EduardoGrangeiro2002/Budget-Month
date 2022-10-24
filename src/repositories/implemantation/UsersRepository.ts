@@ -1,4 +1,4 @@
-import { prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { conditions, inputs, IUsersRepository, User } from "../interfaces/IUsersRepository";
 
 
@@ -10,7 +10,7 @@ export class UsersRepository implements IUsersRepository {
     }
     async create(User: inputs.create): Promise<number> {
         const { name, email, password } = User
-        const user = await this.userClient.user.create({data: {name, email, password}, select: {id_user: true}})
+        const user = await this.userClient.user.create({data: {name, email, password, active: 0}, select: {id_user: true}})
 
         return user.id_user
     }
@@ -42,5 +42,10 @@ export class UsersRepository implements IUsersRepository {
 
         return user.id_user
     }
-  
+
+    async register(id_user: number): Promise<number> {
+        const updatedId = await this.userClient.user.update({where: {id_user}, data: { active: 1 }, select: {id_user:  true}})
+
+        return updatedId.id_user
+    }
 }

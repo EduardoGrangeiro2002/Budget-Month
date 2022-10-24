@@ -117,7 +117,21 @@ class UsersService {
 
         return AppMessages.sendMessageService(msg, {id: deletedId})
     }
-}
+
+    public async register(id_user: number): Promise<responseService> {
+        const findUserById = await this.usersRepositories.selectById(id_user)
+
+        if(!findUserById) throw new AppError(AppMessages.findMessage('ERR001'))
+
+        const userId = await this.usersRepositories.register(id_user)
+
+        if(!userId) throw new AppError(AppMessages.findMessage('ERR011'))
+
+        const msg = AppMessages.findMessage('MSG004')
+
+        return AppMessages.sendMessageService(msg, {id: userId})
+    }
+ }
 
 
 function listUsersDTO (users: UsersPrisma[] | null): UserToDTO[] {
