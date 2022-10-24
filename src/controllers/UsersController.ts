@@ -13,8 +13,8 @@ export class UsersController {
             const { name, email, password } = req.body
 
             const result = await this.usersService.create({ name, email, password })
-
-            return res.json(result)
+            const { message, params } = result
+            return res.status(result.statusCode).json({message, params})
         } catch (e: any) {
             if(e.message && e.statusCode) return res.status(e.statusCode).json(e.message)
             
@@ -28,8 +28,8 @@ export class UsersController {
         try {
             const { id_user, name, email, password } = req.body
             const result = await this.usersService.updateById({id_user, name, email, password})
-
-            return res.json(result)
+            const { message, params } = result
+            return res.status(result.statusCode).json({message, params})
         } catch (e: any) {
             if(e.message && e.statusCode) return res.status(e.statusCode).json(e.message)
             
@@ -74,7 +74,9 @@ export class UsersController {
             const { id_user } = req.params
             const result = await this.usersService.deleteById(parseInt(id_user))
 
-            return res.json(result)
+            const { message, params } = result
+            return res.status(result.statusCode).json({message, params})   
+                 
         } catch (e: any) {
             if(e.message && e.statusCode) return res.status(e.statusCode).json(e.message)
             
