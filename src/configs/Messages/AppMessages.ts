@@ -30,14 +30,14 @@ export class AppMessages {
             {cod: 'ERR008', message: 'Nome é um campo obrigatório!', statusCode: 400},
             {cod: 'ERR009', message: 'Erro interno no servidor!', statusCode: 500},
             {cod: 'ERR011', message: 'Erro ao tentar registrar usuário', statusCode: 400},
-
+            {cod: 'ERR012', message: 'Usuário ou senha incorretos!', statusCode: 401},
         ]
     }
 
     static findMessage(cod: string): message {
         const msg = this.getMessages().find( msg => msg.cod === cod) 
 
-        if(!msg) throw {cod: 'ERR005', msg: 'Erro ao encontrar a mensagem!'}
+        if(!msg) throw {cod: 'ERR1000', msg: 'Erro ao encontrar a mensagem!'}
 
         return msg
     }

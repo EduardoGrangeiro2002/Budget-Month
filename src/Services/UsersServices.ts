@@ -1,8 +1,29 @@
-import { hash } from "bcrypt"
+import { compare, hash } from "bcrypt"
 import { AppError } from "../configs/errors/AppError"
 import { AppMessages, responseService } from "../configs/Messages/AppMessages"
 import { User, UserToDTO } from "../entities/User"
 import { IUsersRepository } from "../repositories/interfaces/IUsersRepository"
+import auth from '../configs/auth/auth'
+import { sign } from "jsonwebtoken"
+import { IDateProvider } from "../providers/interfaces"
+import { IUsersTokensRepository } from "../repositories/interfaces"
+
+type IResponse = {
+    user: {
+      name: string;
+      email: string;
+    };
+  
+    token: string;
+  
+    refresh_token: string;
+  }
+
+type IRequest = {
+    email: string,
+    password: string
+}
+
 
 type payload = {
     id_user: number
@@ -33,6 +54,8 @@ const SALT_ROUNDS = 8
 class UsersService {
     constructor (
         private usersRepositories: IUsersRepository,
+        private dateProvider: IDateProvider,
+        private usersTokensRepository: IUsersTokensRepository,
     ) {}
 
     public async create({name, email, password}: payloadCreate): Promise<responseService> {
@@ -130,6 +153,49 @@ class UsersService {
         const msg = AppMessages.findMessage('MSG004')
 
         return AppMessages.sendMessageService(msg, {id: userId})
+    }
+
+    public async login({email, password}: IRequest) {
+        const user = await this.usersRepositories.selectByEmail(email)
+
+        if(!user) throw new AppError(AppMessages.findMessage('ERR012'))
+
+        const passwordMatch = await compare(password, user.password)
+
+        if(!passwordMatch) throw new AppError(AppMessages.findMessage('ERR012'))
+
+        const { secret_token, secret_refresh_token,
+                expires_in_refresh_token, expires_in_token,
+                expires_refresh_token } = auth
+
+        const token = sign({}, secret_token, {
+            subject: user.id_user.toString(),
+            expiresIn: expires_in_token
+        })
+
+        const refresh_token = sign({email}, secret_refresh_token, {
+            subject: user.id_user.toString(),
+            expiresIn: expires_in_refresh_token
+        })
+
+        const expires_date = this.dateProvider.addDays(auth.expires_refresh_token)
+
+        await this.usersTokensRepository.create({
+            expires_date,
+            refresh_token,
+            user_id: user.id_user
+        })
+
+        const tokenReturn: IResponse = {
+            token,
+            refresh_token,
+            user: {
+              name: user.name,
+              email: user.email,
+            },
+          }
+      
+          return tokenReturn
     }
  }
 

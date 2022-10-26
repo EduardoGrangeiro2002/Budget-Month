@@ -18,4 +18,16 @@ model User {
   active Int 
   created_at DateTime @default(now())
   updatedAt DateTime? @updatedAt
+  userToken UserToken[]
+}
+
+model UserToken {
+  id_user_token Int @id @default(autoincrement())
+  id_user Int
+  refresh_token String
+  expires_date DateTime
+  created_at  DateTime @default(now())
+  User User @relation(fields: [id_user], references: [id_user])
+
+  @@index([id_user], name: "user")
 }
