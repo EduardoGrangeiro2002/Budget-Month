@@ -16,11 +16,11 @@ export class UsersController {
             const { message, params } = result
             return res.status(result.statusCode).json({message, params})
         } catch (e: any) {
-            if(e.message && e.statusCode) return res.status(e.statusCode).json(e.message)
+            if(e.message && e.statusCode) return res.status(e.statusCode).json({msg: e.message})
             
             const error = new AppError(AppMessages.findMessage('ERR009'))
 
-            return res.status(error.statusCode).json(error.message)
+            return res.status(error.statusCode).json({msg: error.message})
         }
     }
 
@@ -31,11 +31,11 @@ export class UsersController {
             const { message, params } = result
             return res.status(result.statusCode).json({message, params})
         } catch (e: any) {
-            if(e.message && e.statusCode) return res.status(e.statusCode).json(e.message)
+            if(e.message && e.statusCode) return res.status(e.statusCode).json({msg: e.message})
             
             const error = new AppError(AppMessages.findMessage('ERR009'))
 
-            return res.status(error.statusCode).json(error.message)
+            return res.status(error.statusCode).json({msg: error.message})
         }
     }
 
@@ -46,11 +46,11 @@ export class UsersController {
 
             return res.json({result})
         } catch (e: any) {
-            if(e.message && e.statusCode) return res.status(e.statusCode).json(e.message)
+            if(e.message && e.statusCode) return res.status(e.statusCode).json({msg: e.message})
             
             const error = new AppError(AppMessages.findMessage('ERR009'))
 
-            return res.status(error.statusCode).json(error.message)
+            return res.status(error.statusCode).json({msg: error.message})
         }
     }
 
@@ -61,11 +61,11 @@ export class UsersController {
 
             return res.json({result})
         } catch (e: any) {
-            if(e.message && e.statusCode) return res.status(e.statusCode).json(e.message)
+            if(e.message && e.statusCode) return res.status(e.statusCode).json({msg: e.message})
             
             const error = new AppError(AppMessages.findMessage('ERR009'))
 
-            return res.status(error.statusCode).json(error.message)
+            return res.status(error.statusCode).json({msg: error.message})
         }
     }
 
@@ -78,11 +78,27 @@ export class UsersController {
             return res.status(result.statusCode).json({message, params})   
                  
         } catch (e: any) {
-            if(e.message && e.statusCode) return res.status(e.statusCode).json(e.message)
+            if(e.message && e.statusCode) return res.status(e.statusCode).json({msg: e.message})
             
             const error = new AppError(AppMessages.findMessage('ERR009'))
 
-            return res.status(error.statusCode).json(error.message)
+            return res.status(error.statusCode).json({msg: error.message})
+        }
+    }
+
+    async login(req: Request, res: Response): Promise<Response> {
+        try {
+            const { email, password } = req.body
+
+            const result = await this.usersService.login({email, password})
+
+            return res.status(200).json(result)
+        } catch (e: any) {
+            if(e.message && e.statusCode) return res.status(e.statusCode).json({msg: e.message})
+            
+            const error = new AppError(AppMessages.findMessage('ERR009'))
+
+            return res.status(error.statusCode).json({msg:  error.message})
         }
     }
 }

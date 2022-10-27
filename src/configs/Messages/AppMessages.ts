@@ -31,6 +31,7 @@ export class AppMessages {
             {cod: 'ERR009', message: 'Erro interno no servidor!', statusCode: 500},
             {cod: 'ERR011', message: 'Erro ao tentar registrar usuário', statusCode: 400},
             {cod: 'ERR012', message: 'Usuário ou senha incorretos!', statusCode: 401},
+            {cod: 'ERR013', message: 'Usuário não registrado!', statusCode: 401},
         ]
     }
 

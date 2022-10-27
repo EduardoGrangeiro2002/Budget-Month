@@ -160,6 +160,10 @@ class UsersService {
 
         if(!user) throw new AppError(AppMessages.findMessage('ERR012'))
 
+        const userClass = new User(user.name, user.email, user.password, user.active)
+
+        if(!userClass.validateActive()) throw new AppError(AppMessages.findMessage('ERR013'))
+
         const passwordMatch = await compare(password, user.password)
 
         if(!passwordMatch) throw new AppError(AppMessages.findMessage('ERR012'))
@@ -178,7 +182,7 @@ class UsersService {
             expiresIn: expires_in_refresh_token
         })
 
-        const expires_date = this.dateProvider.addDays(auth.expires_refresh_token)
+        const expires_date = this.dateProvider.addDays(expires_refresh_token)
 
         await this.usersTokensRepository.create({
             expires_date,

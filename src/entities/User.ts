@@ -8,10 +8,12 @@ class User {
     public readonly name: string
     public readonly email: string
     private readonly password: string
-    constructor(name: string, email: string, password: string) {
+    private readonly active: number | undefined
+    constructor(name: string, email: string, password: string, active?: number) {
         this.name = name
         this.email = email
         this.password = password
+        this.active = active
     }
     
     getName(): string {
@@ -36,6 +38,10 @@ class User {
 
     compareEmail(email: string): boolean {
         return this.email === email
+    }
+
+    validateActive(): boolean {
+        return this.active == 1
     }
 
     returnDTO(id_user: number): UserToDTO {

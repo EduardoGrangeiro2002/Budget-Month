@@ -28,12 +28,12 @@ export class UsersRepository implements IUsersRepository {
         return users
     }
     async selectByEmail(email: string): Promise<User | null> {
-        const user = await this.userClient.user.findUnique({where: {email: email}, select: {email: true, name: true, id_user: true, password: true}})
+        const user = await this.userClient.user.findUnique({where: {email: email}, select: {email: true, name: true, id_user: true, password: true, active: true}})
 
         return user
     }
     async selectById(id_user: number): Promise<User | null> {
-        const user = await this.userClient.user.findUnique({where: {id_user}, select: {email: true, name: true, id_user: true, password: true}})
+        const user = await this.userClient.user.findUnique({where: {id_user}, select: {email: true, name: true, id_user: true, password: true, active: true}})
 
         return user
     }
